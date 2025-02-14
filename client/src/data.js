@@ -39,3 +39,38 @@ export const sliderItems = [
       title: "LIGHT JACKETS",
     },
   ];
+
+  export const popularProducts = [
+    {
+      id:1,
+      img:"/images/products/kurta1.jpg",
+    },
+    {
+      id:2,
+      img:"/images/products/tshirt1.jpg",
+    },
+    {
+      id:3,
+      img:"/images/products/coat1.jpg",
+    },
+    {
+      id:4,
+      img:"/images/products/handbag1.jpg",
+    },
+    {
+      id:5,
+      img:"/images/products/playsuit1.jpg",
+    },
+    {
+      id:6,
+      img:"/images/products/hoodie.jpg",
+    },
+    {
+      id:7,
+      img:"/images/products/tshirt2.jpg",
+    },
+    {
+      id:8,
+      img:"/images/products/shirt1.jpg",
+    },
+  ]
