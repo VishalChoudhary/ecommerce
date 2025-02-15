@@ -72,8 +72,8 @@ const Navbar = () => {
         </Left>
         <Center><Logo>Bbazzar.</Logo></Center>
         <Right>
+          <MenuItem>Login</MenuItem>
           <MenuItem>SignUp</MenuItem>
-          <MenuItem>SignIn</MenuItem>
           <MenuItem>
             <Badge badgeContent={4} color="primary">
               <ShoppingCartOutlined />
