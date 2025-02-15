@@ -4,13 +4,13 @@ import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
 // eslint-disable-next-line
 import Product from "./pages/Product";
-import Signup from "./pages/Signup";
 // eslint-disable-next-line
+import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 
 const App = () => {
   return <div>
-    <Signup />
+    <Login />
   </div>;
 };
 
