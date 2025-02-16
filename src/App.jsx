@@ -1,16 +1,13 @@
-// eslint-disable-next-line
-import Home from "./pages/Home";
-// eslint-disable-next-line
-import ProductList from "./pages/ProductList";
-// eslint-disable-next-line
-import Product from "./pages/Product";
-// eslint-disable-next-line
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+// import Home from "./pages/Home";
+// import ProductList from "./pages/ProductList";
+// import Product from "./pages/Product";
+// import Signup from "./pages/Signup";
+// import Login from "./pages/Login";
+import Cart from "./pages/Cart";
 
 const App = () => {
   return <div>
-    <Login />
+    <Cart />
   </div>;
 };
 
