@@ -35,7 +35,7 @@ router.post('/login',async(req,res)=>{
         //find user in DB
         const user = await User.findOne({username});
         if(!user)
-            return res.status(401).json("Wrong Credentials!");
+            return res.status(401).json("User Not Found!");
 
         //compare passwords using bcrypt
         const validPassword = await bcrypt.compare(password,user.password);
