@@ -45,7 +45,7 @@ router.post('/login',async(req,res)=>{
 
         const payLoad = {
             id: user._id,
-            isAdmin : user._isAdmin,
+            isAdmin : user.isAdmin,
         };
 
         const accessToken = jwt.sign(
