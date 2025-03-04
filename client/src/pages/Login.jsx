@@ -117,7 +117,7 @@ const Login = () => {
             </Form>
             <FooterBox>
                 <PlaceholderText style={{fontSize: "12px", color:"gray", fontWeight:"500",}}>Don’t you have an account? </PlaceholderText>
-                <Link>Sing Up</Link>
+                <Link>Register</Link>
             </FooterBox>
         </Wrapper>
     </Container>

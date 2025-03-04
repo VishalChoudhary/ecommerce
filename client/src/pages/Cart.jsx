@@ -224,7 +224,7 @@ const Cart = () => {
                                     <Remove />
                                 </AmountButtonDesign>
                             </ProductAmountContainer>
-                            <ProductPrice>₹2,500</ProductPrice>
+                            <ProductPrice>$600</ProductPrice>
                         </PriceDetail>
                     </Product>
                     <Hr />
@@ -250,7 +250,7 @@ const Cart = () => {
                                     <Remove />
                                 </AmountButtonDesign>
                             </ProductAmountContainer>
-                            <ProductPrice>₹3,500</ProductPrice>
+                            <ProductPrice>$350</ProductPrice>
                         </PriceDetail>
                     </Product>
                 </Info>
@@ -258,19 +258,19 @@ const Cart = () => {
                     <SummaryTitle>Price details</SummaryTitle>
                     <SummaryItem>
                         <SummaryItemText>Subtotal</SummaryItemText>
-                        <SummaryItemPrice>₹8,500</SummaryItemPrice>
+                        <SummaryItemPrice>$1,500</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem>
                         <SummaryItemText>Shipping Cost</SummaryItemText>
-                        <SummaryItemPrice>₹500</SummaryItemPrice>
+                        <SummaryItemPrice>$30</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem>
                         <SummaryItemText>Discount</SummaryItemText>
-                        <SummaryItemPrice>₹500</SummaryItemPrice>
+                        <SummaryItemPrice>$30</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem type='total'>
                         <SummaryItemText>Total</SummaryItemText>
-                        <SummaryItemPrice>₹8,500</SummaryItemPrice>
+                        <SummaryItemPrice>$1,500</SummaryItemPrice>
                     </SummaryItem>
                     <ButtonBox>
                         <Button>Place Order</Button>

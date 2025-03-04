@@ -99,7 +99,7 @@ const Link = styled.a`
     cursor: pointer;
 `;
 
-const Signup = () => {
+const Register = () => {
   return (
     <Container>
         <Wrapper>
@@ -131,14 +131,14 @@ const Signup = () => {
                 </Box>
                 <Agreement>By creating an account, I agree to the <br/>
                 <b style={{color:"#f1506b"}}>Terms of Use</b> & <b style={{color:"#f1506b"}}>Privacy Policy</b></Agreement>
-                <Button>Sing Up</Button>
+                <Button>Register</Button>
             </Form>
             <FooterBox>
-                Already have an account?<Link> Sign in </Link>
+                Already have an account?<Link> Login </Link>
             </FooterBox>
         </Wrapper>
     </Container>
   )
 }
 
-export default Signup;
+export default Register;
