@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Navbar from '../components/Navbar';
 import Announcement from '../components/Announcement';
 import Newsletter from '../components/Newsletter';
 import Footer from '../components/Footer';
 import { Add, Remove, ShoppingCart } from '@material-ui/icons';
+import { useLocation } from 'react-router-dom';
+import { publicRequest } from "../requestMethod";
 
 const Container = styled.div``;
 
@@ -19,8 +21,8 @@ const ImageContainer = styled.div`
 
 const Image = styled.img`
     width: 100%;
-    height: 85vh;
-    object-fit: cover;
+    max-height: 85vh;
+    object-fit: contain;
 `;
 
 const InfoContainer = styled.div`
@@ -62,7 +64,7 @@ const FilterColor = styled.div`
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: ${props=>props.color};
+    background-color: ${props => props.color};
     margin: 0px 5px;
     cursor: pointer;
 `;
@@ -108,61 +110,98 @@ const Button = styled.button`
     display: flex;
     align-items: center;
 
-    &:hover{
+    &:hover {
         background-color: #1c6e6e;
     }
 `;
 
 const Product = () => {
-  return (
-    <Container>
-        <Navbar/>
-        <Announcement />
-        <Wrapper>
-            <ImageContainer>
-                <Image src="https://i.ibb.co/S6qMxwr/jean.jpg"/>
-            </ImageContainer>
-            <InfoContainer>
-                <Title>Denim Jumpsuit</Title>
-                <Description>
-                    Give your new season's closet a dash of fresh style with this voguish jumpsuit. The style has a mandarin collar 
-                    with a front button placket, multiple pockets and drop-shoulder sleeves. It also has a special wash effect and 
-                    a belt on the waist. Crafted from the prime quality fabric that guarantees limitless comfort, a breezy feel and 
-                    a cheerful look.
-                </Description>
-                <Price>₹ 799</Price>
-                <FilterContainer>
-                    <Filter>
-                        <FilterTitle>Color</FilterTitle>
-                        <FilterColor color="black"/>
-                        <FilterColor color="darkblue"/>
-                        <FilterColor color="gray"/>
-                    </Filter>
-                    <Filter>
-                        <FilterTitle>Size</FilterTitle>
-                        <FilterSize>
-                            <FilterSizeOption>XS</FilterSizeOption>
-                            <FilterSizeOption>S</FilterSizeOption>
-                            <FilterSizeOption>M</FilterSizeOption>
-                            <FilterSizeOption>L</FilterSizeOption>
-                            <FilterSizeOption>XL</FilterSizeOption>
-                        </FilterSize>
-                    </Filter>
-                </FilterContainer>
-                <AddContainer>
+    const location = useLocation();
+    //fetch product using id
+    const id = location.pathname.split("/")[2];
+
+    const [product, setProduct] = useState(null);
+    const [quantity, setQuantity] = useState(1);
+    // eslint-disable-next-line
+    const [color, setColor] = useState("");
+    // eslint-disable-next-line
+    const [size, setSize] = useState("");
+
+    useEffect(() => {
+        const getProduct = async () => {
+            try {
+                const res = await publicRequest.get(`/products/find/${id}`);
+                setProduct(res.data);
+            } catch (error) {
+                console.error("Error fetching product:", error);
+            }
+        };
+        getProduct();
+    }, [id]);
+
+    // Handle loading state
+    if (!product) {
+        return <h2>Loading product...</h2>;
+    }
+
+    const handleQuantity =(type) =>{
+        if(type === "dec"){
+           quantity>1 && setQuantity(quantity-1);
+        }else{
+            setQuantity(quantity+1);
+        }
+    };
+
+    return (
+        <Container>
+            <Navbar />
+            <Announcement />
+            <Wrapper>
+                <ImageContainer>
+                    <Image src={product?.img || "Product"} />
+                </ImageContainer>
+                <InfoContainer>
+                    <Title>{product?.title || "No Title Available"}</Title>
+                    <Description>{product?.desc || "No description available."}</Description>
+                    <Price>{product?.price ? `$ ${product.price}` : "Price not available"}</Price>
+                    <FilterContainer>
+                        <Filter>
+                            <FilterTitle>Color</FilterTitle>
+                            {Array.isArray(product?.color) ? (
+                                product.color.map((c) => (
+                                    <FilterColor color={c} key={c} onClick={()=>setColor(c)}/>
+                                ))
+                            ) : (
+                                <span>No colors available</span>
+                            )}
+                        </Filter>
+                        <Filter>
+                            <FilterTitle>Size</FilterTitle>
+                            <FilterSize onChange={(e)=>setSize(e.target.value)}>
+                                {Array.isArray(product?.size) ? (
+                                    product.size.map((s) => (
+                                        <FilterSizeOption key={s}>{s}</FilterSizeOption>
+                                    ))
+                                ) : (
+                                    <FilterSizeOption>No sizes available</FilterSizeOption>
+                                )}
+                            </FilterSize>
+                        </Filter>
+                    </FilterContainer>
+                    <AddContainer>
                     <AmountContainer>
-                        <Remove />
-                        <Amount>1</Amount>
-                        <Add />
-                    </AmountContainer>
-                    <Button><ShoppingCart style={{marginRight: "5px"}}/>ADD TO CART</Button>
-                </AddContainer>
-            </InfoContainer>
-        </Wrapper>
-        <Newsletter />
-        <Footer />
-    </Container>
-  )
-}
+                        <Remove onClick={()=>handleQuantity("dec")}/>
+                        <Amount>{quantity}</Amount>
+                        <Add onClick={()=>handleQuantity("inc")}/>
+                        </AmountContainer>
+                        <Button><ShoppingCart style={{marginRight: "5px"}}/>ADD TO CART</Button>
+                    </AddContainer>
+                </InfoContainer>
+            </Wrapper>
+            <Newsletter />
+            <Footer />
+        </Container>
+    );
+};
 
 export default Product;

@@ -14,7 +14,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products/:category" element={<ProductList />} />
-        <Route path="/product:id" element={<Product />} />
+        <Route path="/product/:id" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
         {/* Redirecting if user is logged in */}
         <Route path="/login" element={user ? <Navigate to ="/" /> :<Login />} />

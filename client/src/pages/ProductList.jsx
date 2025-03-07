@@ -37,6 +37,7 @@ const Option = styled.option``;
 
 const ProductList = () => {
   const location = useLocation();
+  //fetch categories using category var
   const category = location.pathname.split("/")[2];  
 
   const [filters, setFilters] = useState({});
