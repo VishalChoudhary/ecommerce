@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { popularProducts } from '../data';
 import SingleProduct from './SingleProduct';
 import axios from "axios";
 
@@ -44,7 +43,7 @@ const Products = ({category,filters,sort}) => {
   useEffect(()=>{
     if(sort === "newest"){
       setFilteredProducts((prev)=>
-      [...prev].sort((a,b)=> new Date(a.createdAt) - new Date(b.createdAt))
+      [...prev].sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt))
       );
     }
     else if(sort === "asc"){
@@ -63,7 +62,7 @@ const Products = ({category,filters,sort}) => {
     <Container>
         {category ? filteredProducts.map((item)=>(
             <SingleProduct item={item} key={item.key}/>
-        )) : popularProducts
+        )) : products
               .slice(0,8)
               .map((item)=>(
               <SingleProduct item={item} key={item.key}/>
