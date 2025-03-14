@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Navbar from '../components/Navbar';
 import Announcement from '../components/Announcement';
 import { Add, Remove } from '@material-ui/icons';
+import { useSelector } from 'react-redux';
 
 const Container = styled.div`
     /* background-color: #fef9f9;   */
@@ -54,6 +55,7 @@ const Info = styled.div`
 const Product = styled.div`
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
 `;
 
 const ProductDetail = styled.div`
@@ -186,6 +188,7 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+  const cart = useSelector(state=>state.cart);
   return (
     <Container>
         <Navbar />
@@ -202,16 +205,17 @@ const Cart = () => {
             </Top>
             <Bottom>
                 <Info>
-                    <Product>
+                    {cart.products.map(product=>(
+                        <Product>
                         <ProductDetail>
-                            <ProductImage src="/images/cart/adidas1.jpg"/>
+                            <ProductImage src={product.img}/>
                             <Details>
-                                <ProductName>Adidas Mens Runavtaar M Sneaker</ProductName>
+                                <ProductName>{product.title}</ProductName>
                                 <ColorContainer>
                                     <span><b>Color</b></span>
-                                    <ProductColor color='black'></ProductColor>
+                                    <ProductColor color={product.color}></ProductColor>
                                 </ColorContainer>
-                                <ProductSize><b>Size</b>  9 UK</ProductSize>
+                                <ProductSize><b>Size </b>{product.size}</ProductSize>
                             </Details>
                         </ProductDetail>
                         <PriceDetail>
@@ -219,46 +223,22 @@ const Cart = () => {
                                 <AmountButtonDesign>
                                     <Add />
                                 </AmountButtonDesign>
-                                <ProductAmount>2</ProductAmount>
+                                <ProductAmount>{product.quantity}</ProductAmount>
                                 <AmountButtonDesign>
                                     <Remove />
                                 </AmountButtonDesign>
                             </ProductAmountContainer>
-                            <ProductPrice>$600</ProductPrice>
+                            <ProductPrice>${product.price*product.quantity}</ProductPrice>
                         </PriceDetail>
                     </Product>
-                    <Hr />
-                    <Product>
-                        <ProductDetail>
-                            <ProductImage src="/images/cart/YUTA.jpg"/>
-                            <Details>
-                                <ProductName>Yuta JJK Oversized T-Shirt</ProductName>
-                                <ColorContainer>
-                                    <span><b>Color</b></span>
-                                    <ProductColor color='black'></ProductColor>
-                                </ColorContainer>
-                                <ProductSize><b>Size</b>  L</ProductSize>
-                            </Details>
-                        </ProductDetail>
-                        <PriceDetail>
-                            <ProductAmountContainer>
-                                <AmountButtonDesign>
-                                    <Add />
-                                </AmountButtonDesign>
-                                <ProductAmount>1</ProductAmount>
-                                <AmountButtonDesign>
-                                    <Remove />
-                                </AmountButtonDesign>
-                            </ProductAmountContainer>
-                            <ProductPrice>$350</ProductPrice>
-                        </PriceDetail>
-                    </Product>
+                    ))}
+                <Hr />
                 </Info>
                 <Summary>
                     <SummaryTitle>Price details</SummaryTitle>
                     <SummaryItem>
                         <SummaryItemText>Subtotal</SummaryItemText>
-                        <SummaryItemPrice>$1,500</SummaryItemPrice>
+                        <SummaryItemPrice>${cart.total}</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem>
                         <SummaryItemText>Shipping Cost</SummaryItemText>
@@ -270,7 +250,7 @@ const Cart = () => {
                     </SummaryItem>
                     <SummaryItem type='total'>
                         <SummaryItemText>Total</SummaryItemText>
-                        <SummaryItemPrice>$1,500</SummaryItemPrice>
+                        <SummaryItemPrice>${cart.total}</SummaryItemPrice>
                     </SummaryItem>
                     <ButtonBox>
                         <Button>Place Order</Button>
