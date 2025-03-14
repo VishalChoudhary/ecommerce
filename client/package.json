@@ -19,6 +19,7 @@
     "react-scripts": "^5.0.1",
     "react-stripe-checkout": "^2.6.3",
     "redux": "^4.1.0",
+    "redux-persist": "^6.0.0",
     "stripe": "^17.7.0",
     "styled-components": "^5.3.11",
     "web-vitals": "^1.0.1"
