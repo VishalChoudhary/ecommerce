@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import {useDispatch, useSelector} from 'react-redux';
+import { login } from '../redux/apiCalls';
 
 const Container = styled.div`
     width: 100vw;
@@ -79,9 +81,12 @@ const Button = styled.button`
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s ease;
-
     &:hover{
         background-color: #5aacc8;
+    }
+    &:disabled{
+        color: green;
+        cursor: not-allowed;
     }
 `;
 
@@ -99,26 +104,50 @@ const Link = styled.a`
     font-weight: bolder;
 `;
 
+const Error = styled.span`
+    margin-top: 10px;
+    color: red;
+`;
+
 const Login = () => {
+  const [username, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const {isFetching,error} = useSelector(state=>state.user);
+  
+  const handleClick = (e) =>{
+    e.preventDefault();
+    dispatch(login({username,password}));
+  }
+
   return (
     <Container>
         <Wrapper>
             <Title>Login</Title>
             <Form>
                 <Box>
-                    <PlaceholderText>UserName</PlaceholderText>
-                    <Input/>
+                    <Input 
+                    type="text" 
+                    placeholder="Username" 
+                    onChange={(e) => setUserName(e.target.value)} 
+                    />
                 </Box>
                 <Box>
-                    <PlaceholderText>Password</PlaceholderText>
-                    <Input/>
+                    <Input 
+                    type='password'
+                    placeholder="Password" 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    />
                 </Box>
-                <Button>Login</Button>
-            </Form>
-            <FooterBox>
-                <PlaceholderText style={{fontSize: "12px", color:"gray", fontWeight:"500",}}>Don’t you have an account? </PlaceholderText>
+                <Button onClick={handleClick} disabled={isFetching}>Login</Button>
+                {error && <Error>Something went wrong!</Error>}
+                <FooterBox>
+                <Link>
+                    <PlaceholderText style={{fontSize: "12px", color:"gray", fontWeight:"500",}}>Don’t you have an account? </PlaceholderText>
+                </Link>
                 <Link>Register</Link>
-            </FooterBox>
+                </FooterBox>
+            </Form>
         </Wrapper>
     </Container>
   )

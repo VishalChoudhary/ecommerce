@@ -15,7 +15,7 @@ const Container = styled.div`
 const Announcement = () => {
   return (
     <Container>
-        Get Upto 30% off on cart value of ₹1199 and above. 
+        Get Upto 30% off on cart value of $899 and above. 
     </Container>
   )
 }

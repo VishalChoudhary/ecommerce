@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import { Add, Remove, ShoppingCart } from '@material-ui/icons';
 import { useLocation } from 'react-router-dom';
 import { publicRequest } from "../requestMethod";
-import { addProduct } from '../redux/cartReducer';
+import { addProduct } from '../redux/cartRedux';
 import { useDispatch } from 'react-redux';
 
 const Container = styled.div``;
