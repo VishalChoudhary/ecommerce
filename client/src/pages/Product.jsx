@@ -152,6 +152,10 @@ const Product = () => {
         }
     };
 
+    const handleClick = () =>{
+        
+    }
+
     return (
         <Container>
             <Navbar />
@@ -194,7 +198,10 @@ const Product = () => {
                         <Amount>{quantity}</Amount>
                         <Add onClick={()=>handleQuantity("inc")}/>
                         </AmountContainer>
-                        <Button><ShoppingCart style={{marginRight: "5px"}}/>ADD TO CART</Button>
+                        <Button onClick={handleClick}>
+                            <ShoppingCart style={{marginRight: "5px"}}/>
+                            ADD TO CART
+                        </Button>
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>
