@@ -7,6 +7,8 @@ import Footer from '../components/Footer';
 import { Add, Remove, ShoppingCart } from '@material-ui/icons';
 import { useLocation } from 'react-router-dom';
 import { publicRequest } from "../requestMethod";
+import { addProduct } from '../redux/cartReducer';
+import { useDispatch } from 'react-redux';
 
 const Container = styled.div``;
 
@@ -126,6 +128,8 @@ const Product = () => {
     const [color, setColor] = useState("");
     // eslint-disable-next-line
     const [size, setSize] = useState("");
+    //dispatch hook
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const getProduct = async () => {
@@ -153,8 +157,13 @@ const Product = () => {
     };
 
     const handleClick = () =>{
-        
-    }
+        dispatch(addProduct({
+            ...product,
+            quantity,
+            color,
+            size,
+        }));
+    };
 
     return (
         <Container>
