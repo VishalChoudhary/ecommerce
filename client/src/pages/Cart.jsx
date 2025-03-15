@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import Navbar from '../components/Navbar';
 import Announcement from '../components/Announcement';
 import { Add, Remove } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { addProduct, removeFromCart } from '../redux/cartRedux';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
-    /* background-color: #fef9f9;   */
     height: 100vh;
 `;
 
@@ -30,9 +31,9 @@ const TopButton = styled.button`
     padding: 10px 20px;
     cursor: pointer;
     font-weight: 500;
-    border: ${props=>props.type==='filled' && 'none'};
-    background-color: ${(props)=>props.type==='filled' ? 'black' : 'transparent'};
-    color: ${(props)=>props.type==='filled' && 'white'};
+    border: ${props => props.type === 'filled' && 'none'};
+    background-color: ${props => props.type === 'filled' ? 'black' : 'transparent'};
+    color: ${props => props.type === 'filled' && 'white'};
 `;
 
 const TopTexts = styled.div``;
@@ -49,7 +50,7 @@ const Bottom = styled.div`
 `;
 
 const Info = styled.div`
-    flex : 3;
+    flex: 3;
 `;
 
 const Product = styled.div`
@@ -75,9 +76,7 @@ const Details = styled.div`
     justify-content: space-around;
 `;
 
-const ProductName = styled.span`
-
-`;
+const ProductName = styled.span``;
 
 const ColorContainer = styled.div`
     display: flex;
@@ -89,19 +88,17 @@ const ProductColor = styled.div`
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: ${(props)=>props.color};
+    background-color: ${(props) => props.color};
 `;
 
-const ProductSize = styled.span`
-
-`;
+const ProductSize = styled.span``;
 
 const PriceDetail = styled.div`
-    flex : 1.5;
+    flex: 1.5;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;    
+    justify-content: center;
 `;
 
 const ProductAmountContainer = styled.div`
@@ -131,6 +128,7 @@ const AmountButtonDesign = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 `;
 
 const ProductPrice = styled.div`
@@ -146,7 +144,7 @@ const Hr = styled.hr`
 `;
 
 const Summary = styled.div`
-    flex : 1;
+    flex: 1;
     border: 0.5px solid lightgray;
     border-radius: 20px;
     padding: 20px;
@@ -163,8 +161,8 @@ const SummaryItem = styled.div`
     margin: 30px;
     display: flex;
     justify-content: space-between;
-    font-weight: ${props=>props.type === "total" && "500"};
-    font-size: ${props=>props.type === "total" && "24px"};
+    font-weight: ${(props) => props.type === "total" && "500"};
+    font-size: ${(props) => props.type === "total" && "24px"};
 `;
 
 const SummaryItemText = styled.span``;
@@ -188,78 +186,99 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
-  const cart = useSelector(state=>state.cart);
-  return (
-    <Container>
-        <Navbar />
-        <Announcement />
-        <Wrapper>
-            <Title>Your Cart</Title>
-            <Top>
-                <TopButton>Continue Shopping</TopButton>
-                <TopTexts>
-                    <TopText>Shopping Bag(2)</TopText>
-                    <TopText>Wishlist(0)</TopText>
-                </TopTexts>
-                <TopButton type='filled'>Place Order</TopButton>
-            </Top>
-            <Bottom>
-                <Info>
-                    {cart.products.map(product=>(
-                        <Product>
-                        <ProductDetail>
-                            <ProductImage src={product.img}/>
-                            <Details>
-                                <ProductName>{product.title}</ProductName>
-                                <ColorContainer>
-                                    <span><b>Color</b></span>
-                                    <ProductColor color={product.color}></ProductColor>
-                                </ColorContainer>
-                                <ProductSize><b>Size </b>{product.size}</ProductSize>
-                            </Details>
-                        </ProductDetail>
-                        <PriceDetail>
-                            <ProductAmountContainer>
-                                <AmountButtonDesign>
-                                    <Add />
-                                </AmountButtonDesign>
-                                <ProductAmount>{product.quantity}</ProductAmount>
-                                <AmountButtonDesign>
-                                    <Remove />
-                                </AmountButtonDesign>
-                            </ProductAmountContainer>
-                            <ProductPrice>${product.price*product.quantity}</ProductPrice>
-                        </PriceDetail>
-                    </Product>
-                    ))}
-                <Hr />
-                </Info>
-                <Summary>
-                    <SummaryTitle>Price details</SummaryTitle>
-                    <SummaryItem>
-                        <SummaryItemText>Subtotal</SummaryItemText>
-                        <SummaryItemPrice>${cart.total}</SummaryItemPrice>
-                    </SummaryItem>
-                    <SummaryItem>
-                        <SummaryItemText>Shipping Cost</SummaryItemText>
-                        <SummaryItemPrice>$30</SummaryItemPrice>
-                    </SummaryItem>
-                    <SummaryItem>
+    const cart = useSelector((state) => state.cart);
+    const dispatch = useDispatch();
+
+    const handleIncrease = (product) => {
+        dispatch(addProduct({ ...product, quantity: 1 }));
+    };
+
+    const handleDecrease = (productId) => {
+        dispatch(removeFromCart(productId));
+    };
+
+    const shippingCost = cart.products.length > 0 && cart.total < 500 ? 30 : 0;
+    const discount = cart.total >= 2499 ? cart.total * 0.15 : 0;
+
+    return (
+        <Container>
+            <Navbar />
+            <Announcement />
+            <Wrapper>
+                <Title>Your Cart</Title>
+                <Top>
+                    <Link to='/'>
+                        <TopButton>Continue Shopping</TopButton>
+                    </Link>
+                    <TopTexts>
+                        <TopText>Shopping Bag ({cart.products.length})</TopText>
+                        <TopText>Wishlist (0)</TopText>
+                    </TopTexts>
+                    <TopButton type='filled'>Place Order</TopButton>
+                </Top>
+                <Bottom>
+                    <Info>
+                        {cart.products.map((product) => (
+                            <Product key={product._id}>
+                                <ProductDetail>
+                                    <ProductImage src={product.img} />
+                                    <Details>
+                                        <ProductName>{product.title}</ProductName>
+                                        <ColorContainer>
+                                            <span><b>Color</b></span>
+                                            <ProductColor color={product.color}></ProductColor>
+                                        </ColorContainer>
+                                        <ProductSize><b>Size </b>{product.size}</ProductSize>
+                                    </Details>
+                                </ProductDetail>
+                                <PriceDetail>
+                                    <ProductAmountContainer>
+                                        <AmountButtonDesign onClick={() => handleIncrease(product)}>
+                                            <Add />
+                                        </AmountButtonDesign>
+                                        <ProductAmount>{product.quantity}</ProductAmount>
+                                        <AmountButtonDesign onClick={() => handleDecrease(product._id)}>
+                                            <Remove />
+                                        </AmountButtonDesign>
+                                    </ProductAmountContainer>
+                                    <ProductPrice>${product.price * product.quantity}</ProductPrice>
+                                </PriceDetail>
+                            </Product>
+                        ))}
+                        <Hr />
+                    </Info>
+                    <Summary>
+                        <SummaryTitle>Price Details</SummaryTitle>
+                        <SummaryItem>
+                            <SummaryItemText>Subtotal</SummaryItemText>
+                            <SummaryItemPrice>${cart.products.length > 0 ? cart.total : 0}</SummaryItemPrice> {/* ✅ Prevents incorrect total */}
+                        </SummaryItem>
+                        <SummaryItem>
+                            <SummaryItemText>Shipping Cost</SummaryItemText>
+                            <SummaryItemPrice>
+                                {cart.total < 500 ? `$${shippingCost}` : "Free"}
+                            </SummaryItemPrice>
+                        </SummaryItem>
+                        <SummaryItem>
                         <SummaryItemText>Discount</SummaryItemText>
-                        <SummaryItemPrice>$30</SummaryItemPrice>
-                    </SummaryItem>
-                    <SummaryItem type='total'>
-                        <SummaryItemText>Total</SummaryItemText>
-                        <SummaryItemPrice>${cart.total}</SummaryItemPrice>
-                    </SummaryItem>
-                    <ButtonBox>
-                        <Button>Place Order</Button>
-                    </ButtonBox>
-                </Summary>
-            </Bottom>
-        </Wrapper>
-    </Container>
-  )
-}
+                            <SummaryItemPrice>
+                                {discount > 0 ? `- $${discount.toFixed(2)}` : "$0"}
+                            </SummaryItemPrice>
+                        </SummaryItem>
+                        <SummaryItem type='total'>
+                            <SummaryItemText>Total</SummaryItemText>
+                            <SummaryItemPrice>
+                                ${cart.products.length > 0 ? (cart.total - discount + (cart.total < 500 ? 30 : 0)).toFixed(2) : 0}
+                            </SummaryItemPrice>
+                        </SummaryItem>
+                        <ButtonBox>
+                            <Button disabled={cart.total === 0}>Place Order</Button>
+                        </ButtonBox>
+                    </Summary>
+                </Bottom>
+            </Wrapper>
+        </Container>
+    );
+};
 
 export default Cart;

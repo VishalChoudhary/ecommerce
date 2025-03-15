@@ -61,9 +61,18 @@ const MenuItem = styled.div`
   margin-left: 25px;
 `;
 
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+  &:focus, &:hover, &:visited, &:link, &:active {
+    text-decoration: none;
+    color: inherit;
+  }
+`;
+
 const Navbar = () => {
   //useSelector to read the state of quantity
-  const quantity = useSelector(state=>state.cart.quantity)
+  const quantity = useSelector(state=>state.cart)
   // console.log(quantity);
   return (
     <Container>
@@ -75,13 +84,21 @@ const Navbar = () => {
             <Search style={{color: "gray", fontSize:16}}/>
           </SearchContainer>
         </Left>
-        <Center><Logo>Bbazzar.</Logo></Center>
+        <Center>
+          <StyledLink to='/'>
+            <Logo>Bbazzar.</Logo>
+          </StyledLink>
+        </Center>
         <Right>
-          <MenuItem>Login</MenuItem>
-          <MenuItem>SignUp</MenuItem>
+          <StyledLink to='/login'>
+            <MenuItem>Login</MenuItem>
+          </StyledLink>
+          <StyledLink to='/register'>
+            <MenuItem>Register</MenuItem>
+          </StyledLink>
           <Link to='/cart'>
             <MenuItem>
-              <Badge badgeContent={quantity} color="primary">
+              <Badge badgeContent={quantity.products.length} color="primary">
                 <ShoppingCartOutlined />
               </Badge>
             </MenuItem>
