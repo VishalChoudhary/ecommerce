@@ -94,6 +94,9 @@ const FooterBox = styled.span`
 const Link = styled.a`
     text-decoration: underline;
     cursor: pointer;
+    font-size: 12px;
+    color: gray;
+    font-weight: bolder;
 `;
 
 const Error = styled.span`
@@ -147,10 +150,11 @@ const Register = () => {
                 </Box>
                 <Button onClick={handleRegister} disabled={isFetching}>Register</Button>
                 {error && <Error>Something went wrong!</Error>}
+                <FooterBox>
+                    <PlaceholderText style={{fontSize: "12px", color:"gray", fontWeight:"500",}}>Already have an account? </PlaceholderText>
+                    <Link href='/login'>Login</Link>
+                </FooterBox>
             </Form>
-            <FooterBox>
-                Already have an account?<Link href='/login'> Login </Link>
-            </FooterBox>
         </Wrapper>
     </Container>
   )
