@@ -8,6 +8,12 @@ router.post("/register", async(req,res)=>{
     const {username, email, password} = req.body;
 
     try{
+        //if user or username already exists
+        const existingUser = await User.findOne({$or: [{ username }, { email }] });
+        if(existingUser){
+            return res.json(400).json({message: "User already exists"});
+        }
+
         // Hash password before saving to DB
         const salt = await bcrypt.genSalt(16);
         const hashedPassword = await bcrypt.hash(password,salt);
@@ -24,7 +30,8 @@ router.post("/register", async(req,res)=>{
         const { password:_ , ...userData} = savedUser._doc;
         res.status(201).json(userData);
     } catch(err){
-        res.status(500).json(err);
+        console.error("Registration Error:", err);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
 

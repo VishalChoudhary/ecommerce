@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { register } from '../redux/apiCalls';
 
 const Container = styled.div`
     width: 100vw;
@@ -55,12 +58,6 @@ const Input = styled.input`
     outline: none;
 `;
 
-const Agreement = styled.div`
-    font-size: 12px;
-    text-align: center;
-    margin: 20px 0px;
-`;  
-
 const Box = styled.div`
     width: 70%;
     display: flex;
@@ -99,42 +96,60 @@ const Link = styled.a`
     cursor: pointer;
 `;
 
+const Error = styled.span`
+    margin-top: 10px;
+    color: red;
+`;
+
 const Register = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const dispatch = useDispatch();
+  const {currentUser, isFetching, error} = useSelector(state=>state.user);
+  const navigate = useNavigate();
+
+  const handleRegister = (e) =>{
+    e.preventDefault();
+    if(password !== confirmPassword){
+        alert("Password do not match!");
+        return;
+    }
+    dispatch(register({username,email,password}));
+  };
+
+  if(currentUser){
+    navigate("/");
+  }
+
   return (
     <Container>
         <Wrapper>
             <Title>Create An Account</Title>
             <Form>
                 <Box>
-                    <PlaceholderText>FirstName</PlaceholderText>
-                    <Input/>
-                </Box>
-                <Box>
-                    <PlaceholderText>LastName</PlaceholderText>
-                    <Input/>
-                </Box>
-                <Box>
                     <PlaceholderText>UserName</PlaceholderText>
-                    <Input/>
+                    <Input type='text' onChange={(e)=>setUsername(e.target.value)}/>
                 </Box>
                 <Box>
                     <PlaceholderText>Email</PlaceholderText>
-                    <Input/>
+                    <Input type='text' onChange={(e)=>setEmail(e.target.value)}/>
                 </Box>
                 <Box>
                     <PlaceholderText>Password</PlaceholderText>
-                    <Input/>
+                    <Input type='password' onChange={(e)=>setPassword(e.target.value)}/>
                 </Box>
                 <Box>
                     <PlaceholderText>Confirm Password</PlaceholderText>
-                    <Input/>
+                    <Input type='password' onChange={(e)=>setConfirmPassword(e.target.value)}/>
                 </Box>
-                <Agreement>By creating an account, I agree to the <br/>
-                <b style={{color:"#f1506b"}}>Terms of Use</b> & <b style={{color:"#f1506b"}}>Privacy Policy</b></Agreement>
-                <Button>Register</Button>
+                <Button onClick={handleRegister} disabled={isFetching}>Register</Button>
+                {error && <Error>Something went wrong!</Error>}
             </Form>
             <FooterBox>
-                Already have an account?<Link> Login </Link>
+                Already have an account?<Link href='/login'> Login </Link>
             </FooterBox>
         </Wrapper>
     </Container>
