@@ -126,26 +126,18 @@ const Login = () => {
             <Title>Login</Title>
             <Form>
                 <Box>
-                    <Input 
-                    type="text" 
-                    placeholder="Username" 
-                    onChange={(e) => setUserName(e.target.value)} 
-                    />
+                    <PlaceholderText>UserName</PlaceholderText>
+                    <Input type='text' onChange={(e)=>setUserName(e.target.value)}/>
                 </Box>
                 <Box>
-                    <Input 
-                    type='password'
-                    placeholder="Password" 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    />
+                    <PlaceholderText>Password</PlaceholderText>
+                    <Input type='password' onChange={(e)=>setPassword(e.target.value)}/>
                 </Box>
                 <Button onClick={handleClick} disabled={isFetching}>Login</Button>
                 {error && <Error>Something went wrong!</Error>}
                 <FooterBox>
-                <Link>
-                    <PlaceholderText style={{fontSize: "12px", color:"gray", fontWeight:"500",}}>Don’t you have an account? </PlaceholderText>
-                </Link>
-                <Link>Register</Link>
+                <PlaceholderText style={{fontSize: "12px", color:"gray", fontWeight:"500",}}>Don’t you have an account? </PlaceholderText>
+                <Link href='/register'>Register</Link>
                 </FooterBox>
             </Form>
         </Wrapper>
