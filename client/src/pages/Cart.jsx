@@ -5,7 +5,106 @@ import Announcement from '../components/Announcement';
 import { Add, Remove } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { addProduct, removeFromCart } from '../redux/cartRedux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import axios from "axios";
+
+const stripePromise = loadStripe("pk_test_51QxTpuRtRBgZfbyUq2OQeVnB3PzA4CqEaMiLEg6ix5YtgmW9dVKMIcT9iCawEC340kROOiSANr6dav5lnpA1hNBQ00Zgf9M9o8");
+
+const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    width: 100%;
+    max-width: 400px;
+`;
+
+const StyledCardElement = styled(CardElement)`
+    padding: 12px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #f8f8f8;
+    transition: border 0.3s ease-in-out;
+
+    &:focus {
+        border: 1px solid black;
+    }
+`;
+
+const PayButton = styled.button`
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+        background-color: #0056b3;
+    }
+
+    &:disabled {
+        background: gray;
+        cursor: not-allowed;
+    }
+`;
+
+const CheckoutForm = ({ total }) => {
+    const stripe = useStripe();
+    const elements = useElements();
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (!stripe || !elements) return;
+
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
+            type: "card",
+            card: elements.getElement(CardElement),
+        });
+
+        if (error) {
+            console.error(error.message);
+            return;
+        }
+
+        try {
+            const response = await axios.post("http://localhost:5000/api/checkout/payment", {
+                amount: Math.round(total * 100), // Convert to cents
+                paymentMethodId: paymentMethod.id,
+            });
+
+            if (response.data.success) {
+                navigate("/success");
+            } else {
+                alert("Payment failed. Please try again.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error processing payment.");
+        }
+    };
+
+    return (
+        <StyledForm onSubmit={handleSubmit}>
+            <StyledCardElement options={{ hidePostalCode: true }} />
+            <PayButton type="submit" disabled={!stripe}>Pay ${total.toFixed(2)}</PayButton>
+        </StyledForm>
+    );
+};
 
 const Container = styled.div`
     height: 100vh;
@@ -136,12 +235,12 @@ const ProductPrice = styled.div`
     font-weight: 300;
 `;
 
-const Hr = styled.hr`
-    background-color: #eee;
-    border: none;
-    height: 1px;
-    margin: 20px 0px;
-`;
+// const Hr = styled.hr`
+//     background-color: #eee;
+//     border: none;
+//     height: 1px;
+//     margin: 20px 0px;
+// `;
 
 const Summary = styled.div`
     flex: 1;
@@ -188,6 +287,7 @@ const Button = styled.button`
 const Cart = () => {
     const cart = useSelector((state) => state.cart);
     const dispatch = useDispatch();
+    const [checkout, setCheckout] = React.useState(false);
 
     const handleIncrease = (product) => {
         dispatch(addProduct({ ...product, quantity: 1 }));
@@ -199,6 +299,7 @@ const Cart = () => {
 
     const shippingCost = cart.products.length > 0 && cart.total < 500 ? 30 : 0;
     const discount = cart.total >= 2499 ? cart.total * 0.15 : 0;
+    const total = cart.products.length > 0 ? cart.total - discount + shippingCost : 0;
 
     return (
         <Container>
@@ -214,7 +315,6 @@ const Cart = () => {
                         <TopText>Shopping Bag ({cart.products.length})</TopText>
                         <TopText>Wishlist (0)</TopText>
                     </TopTexts>
-                    <TopButton type='filled'>Place Order</TopButton>
                 </Top>
                 <Bottom>
                     <Info>
@@ -245,34 +345,33 @@ const Cart = () => {
                                 </PriceDetail>
                             </Product>
                         ))}
-                        <Hr />
                     </Info>
                     <Summary>
                         <SummaryTitle>Price Details</SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Subtotal</SummaryItemText>
-                            <SummaryItemPrice>${cart.products.length > 0 ? cart.total : 0}</SummaryItemPrice> {/* ✅ Prevents incorrect total */}
+                            <SummaryItemPrice>${cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>Shipping Cost</SummaryItemText>
-                            <SummaryItemPrice>
-                                {cart.total < 500 ? `$${shippingCost}` : "Free"}
-                            </SummaryItemPrice>
+                            <SummaryItemPrice>{shippingCost > 0 ? `$${shippingCost}` : "Free"}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
-                        <SummaryItemText>Discount</SummaryItemText>
-                            <SummaryItemPrice>
-                                {discount > 0 ? `- $${discount.toFixed(2)}` : "$0"}
-                            </SummaryItemPrice>
+                            <SummaryItemText>Discount</SummaryItemText>
+                            <SummaryItemPrice>{discount > 0 ? `-$${discount.toFixed(2)}` : "$0"}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem type='total'>
                             <SummaryItemText>Total</SummaryItemText>
-                            <SummaryItemPrice>
-                                ${cart.products.length > 0 ? (cart.total - discount + (cart.total < 500 ? 30 : 0)).toFixed(2) : 0}
-                            </SummaryItemPrice>
+                            <SummaryItemPrice>${total.toFixed(2)}</SummaryItemPrice>
                         </SummaryItem>
                         <ButtonBox>
-                            <Button disabled={cart.total === 0}>Place Order</Button>
+                            {checkout ? (
+                                <Elements stripe={stripePromise}>
+                                    <CheckoutForm total={total} />
+                                </Elements>
+                            ) : (
+                                <Button disabled={total === 0} onClick={() => setCheckout(true)}>Place Order</Button>
+                            )}
                         </ButtonBox>
                     </Summary>
                 </Bottom>

@@ -4,6 +4,7 @@ import Product from "./pages/Product";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
+import Success from "./components/Success";
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -20,6 +21,7 @@ const App = () => {
         {/* Redirecting if user is logged in */}
         <Route path="/login" element={user ? <Navigate to ="/" /> :<Login />} />
         <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+        <Route path="/success" element={<Success />} />
       </Routes>
     </Router>
   )
