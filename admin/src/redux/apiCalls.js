@@ -3,16 +3,17 @@ import {loginStart, loginSuccess, loginFailure} from "./userRedux";
 import {registerStart , registerSuccess, registerFailure } from "./userRedux";
 
 // Function to login user
-export const login = (user) =>async (dispatch)=>{
-    dispatch(loginStart()); // Start the login process
+export const login = (user) => async (dispatch) => {
+    dispatch(loginStart()); // Start login process
     try {
-        const res = await publicRequest.post("/auth/login",user);
-        console.log("Login Response:", res.data);
-        dispatch(loginSuccess(res.data)); // If successful, update Redux store
+        const res = await publicRequest.post("/auth/login", user);
+        dispatch(loginSuccess(res.data)); // If login is successful, update Redux state
     } catch (error) {
-        dispatch(loginFailure()); // If error, update Redux store
+        dispatch(loginFailure()); // Dispatch login failure
+        console.error("Login error:", error.response?.data?.message || "Something went wrong");
     }
 };
+
 
 // Function to register a new user
 export const register = (user) => async(dispatch) =>{

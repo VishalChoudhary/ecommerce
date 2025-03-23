@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom"; 
 import { login } from '../../redux/apiCalls';
 
 const Container = styled.div`
@@ -113,11 +114,16 @@ const Login = () => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const {isFetching,error} = useSelector(state=>state.user);
+  const navigate = useNavigate();
+  const {currentUser,isFetching,error} = useSelector(state=>state.user);
   
   const handleClick = (e) =>{
     e.preventDefault();
     dispatch(login({username,password}));
+  }
+
+  if (currentUser) {
+    navigate("/");
   }
 
   return (

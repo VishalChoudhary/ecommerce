@@ -11,13 +11,31 @@ import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
 import Login from "./pages/login/Login";
 
-function App() {
-  const admin = JSON.parse(JSON.parse(localStorage.getItem("persist:user")).user).currentUser.isAdmin;
+const App = () =>{
+
+  let admin = false;
+  const storedData = localStorage.getItem("persist:user");
+
+  if(storedData){
+    try {
+      const parsedData = JSON.parse(storedData);
+      const user = parsedData.user ? JSON.parse(parsedData.user) : null;
+      admin = user?.currentUser?.isAdmin || false;
+    } catch (error) {
+      console.log("Error parsing user data:", error);
+    }
+  }
+
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={admin ? <Navigate to='/'/> :<Login />} />
+        {/*Ensure login page is accessible for non-logged-in users*/}
+        <Route path="/login" element={admin ? <Navigate to='/'/> : <Login/> } />
+         {/*Redirect unauthenticated users to login page*/}
+        {!admin ? <Route path="*" element={<Navigate to="/login" />} /> : null}
       </Routes>
+
+      {/*Render the dashboard only if the user is admin*/}
       { admin && 
       <>
         <Topbar />
