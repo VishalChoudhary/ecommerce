@@ -117,9 +117,9 @@ const Login = () => {
   const navigate = useNavigate();
   const {currentUser,isFetching,error} = useSelector(state=>state.user);
   
-  const handleClick = (e) =>{
+  const handleClick = async (e) =>{
     e.preventDefault();
-    dispatch(login({username,password}));
+    await dispatch(login({username,password}));
   }
 
   if (currentUser) {
